@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Search from  './components/Search';
+import Spinner from './components/Spinner';
+import Movies from './components/Movie';
 import heroImage from './assets/hero-img.png';
 import heroBg from  './assets/hero-bg.png';
 
@@ -38,7 +40,7 @@ const  App = () => {
       console.log(data);
     } 
       catch (error) {
-        console.error(`The error message is ${error}`);
+        // console.error(`The error message is ${error}`);
         setErrorMessage("Error Fetching movies");
       }
       finally{
@@ -59,21 +61,25 @@ const  App = () => {
         </header>
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
-      <h2>All Movies</h2>
-      {
-        loading ? (
-          <p>Loading..</p>
-        ): errorMessage ? (
-          <p className='text-red-500'>{errorMessage}</p>
-        ): (
-          <ul>
-            {moviesList.map((movie) => (
-              <p className='text-white'>{movie.title}</p>
-            ))}
-          </ul>
-        )
-      }
-
+      <section className='all-movies'>
+        <h2>All Movies</h2>
+        {
+          // until the try and catch block doesn't get complete
+          loading ? (
+            <Spinner />
+            // gives error if there is any error message
+          ): errorMessage ? (
+            <p className='text-red-500'>{errorMessage}</p>
+          ): (
+            // maps  through the movies list and renders the movie card
+            <ul>
+              {moviesList.map((movie) => (
+                <Movies key={movie.id} movie={movie} />
+              ))}
+            </ul>
+          )
+        }
+      </section>
     </main>
   );
 }
