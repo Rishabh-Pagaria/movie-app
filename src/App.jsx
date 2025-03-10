@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useDebounce } from 'react-use';
 import './App.css';
 import Search from  './components/Search';
 import Spinner from './components/Spinner';
@@ -22,6 +23,10 @@ const  App = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [moviesList, setMoviesList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [debounceSearchTerm, setdebounceSearchTerm]  = useState('');
+
+  //debounces the search term from making too many requests, by waiting for the user to stop typing for 500ms
+  useDebounce(()=> setdebounceSearchTerm(searchTerm), 500, [searchTerm]);
   const  fetchMovies = async (query = "") => {
     setLoading(true);
     setErrorMessage("");
@@ -48,8 +53,8 @@ const  App = () => {
       }
   }
   useEffect(()=>{
-    fetchMovies(searchTerm);
-  },[searchTerm])
+    fetchMovies(debounceSearchTerm);
+  },[debounceSearchTerm])
 
   return  (
     <main>
