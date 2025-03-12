@@ -6,6 +6,7 @@ import Spinner from './components/Spinner';
 import Movies from './components/Movie';
 import heroImage from './assets/hero-img.png';
 import heroBg from  './assets/hero-bg.png';
+import {updateSearchCount} from './appwrite';
 
 const apiUrl = "https://api.themoviedb.org/3";
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -42,7 +43,9 @@ const  App = () => {
         setMoviesList([]);
       }
       setMoviesList(data.results || []);
-      console.log(data);
+      if(query && data.results.length > 0){
+        await updateSearchCount(query, data.results[0]);
+      }
     } 
       catch (error) {
         // console.error(`The error message is ${error}`);
