@@ -1,12 +1,12 @@
-import { Client, Query } from 'appwrite';
+import { Client, Query, ID, Databases } from 'appwrite';
 
 const projectId = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const collectionId = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
 const client = new Client()
-.setEndpoint('https://cloud.appwrite.io/v1')
-.setProject(projectId)
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject(projectId)
 
 const database = new Databases(client);
 export const updateSearchCount = async(searchTerm, movie)=>{
@@ -25,12 +25,15 @@ export const updateSearchCount = async(searchTerm, movie)=>{
         //  if it does not exist, create a new document
         } 
         else{
-            await database.createDocument(databaseId, collectionId, {
+            const promise = await database.createDocument(databaseId, collectionId,ID.unique(), {
                 searchTerm,
                 count : 1,
+                poster_url: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
                 movie_id: movie.id,
-                poster_url: `https://image,tmdb.org/t/p/w500/${movie.poster_path}`,
-            })
+            });
         }
+    }
+    catch(error){
+        console.log(error);
     }
 };
